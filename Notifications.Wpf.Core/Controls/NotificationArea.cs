@@ -63,8 +63,11 @@ namespace Notifications.Wpf.Core.Controls
             _items = itemsControl?.Children;
         }
 
-        public async Task ShowAsync(object content, TimeSpan? expirationTime, Action? onClick, Action? onClose)
+        public async Task ShowAsync(object content, TimeSpan? expirationTime, Action? onClick, Action? onClose, CancellationToken token)
         {
+            if (token.IsCancellationRequested)
+                return;
+
             var notification = new Notification
             {
                 Content = content
@@ -98,7 +101,10 @@ namespace Notifications.Wpf.Core.Controls
                 return;
             }
 
-            await semaphore.WaitAsync();
+            await semaphore.WaitAsync(token);
+
+            if (token.IsCancellationRequested)
+                return;
 
             try
             {
@@ -131,6 +137,15 @@ namespace Notifications.Wpf.Core.Controls
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+                return;
+
             semaphore?.Dispose();
         }
     }

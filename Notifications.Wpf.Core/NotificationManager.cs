@@ -67,7 +67,7 @@ namespace Notifications.Wpf.Core
 
             foreach (var area in selAreas)
             {
-                await area.ShowAsync(content, (TimeSpan)expirationTime, onClick, onClose);
+                await area.ShowAsync(content, (TimeSpan)expirationTime, onClick, onClose, token.Token);
             }
         }
 
@@ -78,7 +78,14 @@ namespace Notifications.Wpf.Core
 
         public void Dispose()
         {
-            if (token.Token.IsCancellationRequested)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <param name="disposing">if true, get rid of managed ressources</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing || token.Token.IsCancellationRequested)
                 return;
 
             token.Cancel();
