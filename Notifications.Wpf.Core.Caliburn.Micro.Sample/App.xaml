@@ -1,0 +1,29 @@
+﻿<Application x:Class="Notifications.Wpf.Core.Caliburn.Micro.Sample.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:controls="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Notifications.Wpf.Core"
+             xmlns:micro="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Core"
+             xmlns:local="clr-namespace:Notifications.Wpf.Core.Caliburn.Micro.Sample">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <local:Bootstrapper x:Key="Bootstrapper" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <Style TargetType="controls:Notification">
+                <Style.Resources>
+                    <DataTemplate DataType="{x:Type micro:PropertyChangedBase}">
+                        <ContentControl cal:View.Model="{Binding}" />
+                    </DataTemplate>
+                </Style.Resources>
+            </Style>
+
+            <Style TargetType="controls:NotificationArea">
+                <Setter Property="MaxItems" Value="7" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
