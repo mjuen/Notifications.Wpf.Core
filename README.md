@@ -1,5 +1,5 @@
 # Notifications.Wpf.Core
-WPF toast notifications with .NET Core 3.0. 
+Toast notifications for WPF apps based on .NET Core 3.0  
 
 This is a fork of ![Notifications.Wpf](https://github.com/Federerer/Notifications.Wpf)
 
