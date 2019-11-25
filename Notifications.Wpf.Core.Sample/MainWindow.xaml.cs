@@ -16,12 +16,12 @@ namespace Notifications.Wpf.Core.Sample
         {
             InitializeComponent();
 
-            var timer = new Timer { Interval = 3000 };
-            timer.Elapsed += (sender, args) => _notificationManager.Show("Pink string from another thread!");
+            Timer timer = new Timer { Interval = 3000 };
+            timer.Elapsed += async (sender, args) => await _notificationManager.ShowAsync("Pink string from another thread!");
             timer.Start();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Show_Click(object sender, RoutedEventArgs e)
         {
             var content = new NotificationContent
             {
@@ -29,19 +29,22 @@ namespace Notifications.Wpf.Core.Sample
                 Message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                 Type = (NotificationType)_random.Next(0, 4)
             };
-            _notificationManager.Show(content);
+
+            await _notificationManager.ShowAsync(content);
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void ShowWindow_Click(object sender, RoutedEventArgs e)
         {
             var content = new NotificationContent { Title = "Notification in window", Message = "Click me!" };
+
             var clickContent = new NotificationContent
             {
                 Title = "Clicked!",
                 Message = "Window notification was clicked!",
                 Type = NotificationType.Success
             };
-            _notificationManager.Show(content, "WindowArea", onClick: () => _notificationManager.Show(clickContent));
+
+            await _notificationManager.ShowAsync(content, "WindowArea", onClick: async () => await _notificationManager.ShowAsync(clickContent));
         }
     }
 }

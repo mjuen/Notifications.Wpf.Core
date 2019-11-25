@@ -7,9 +7,9 @@ using System.Windows;
 
 namespace Notifications.Wpf.Core.Caliburn.Micro.Sample
 {
-    class Bootstrapper : BootstrapperBase
+    public class Bootstrapper : BootstrapperBase
     {
-        SimpleContainer _container = new SimpleContainer();
+        private readonly SimpleContainer _container = new SimpleContainer();
 
         public Bootstrapper()
         {
@@ -47,7 +47,7 @@ namespace Notifications.Wpf.Core.Caliburn.Micro.Sample
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
             var timer = new Timer { Interval = 12000 };
-            timer.Elapsed += (o, args) => IoC.Get<INotificationManager>().Show("String from Bootstrapper!");
+            timer.Elapsed += async (o, args) => await IoC.Get<INotificationManager>().ShowAsync("String from Bootstrapper!");
             timer.Start();
         }
     }

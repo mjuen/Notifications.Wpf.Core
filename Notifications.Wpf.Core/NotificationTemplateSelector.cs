@@ -5,8 +5,8 @@ namespace Notifications.Wpf.Core
 {
     public class NotificationTemplateSelector : DataTemplateSelector
     {
-        private DataTemplate _defaultStringTemplate;
-        private DataTemplate _defaultNotificationTemplate;
+        private DataTemplate? _defaultStringTemplate;
+        private DataTemplate? _defaultNotificationTemplate;
 
         private void GetTemplatesFromResources(FrameworkElement container)
         {
@@ -23,11 +23,11 @@ namespace Notifications.Wpf.Core
                 GetTemplatesFromResources((FrameworkElement)container);
             }
 
-            if (item is string)
+            if (item is string && _defaultStringTemplate != null)
             {
                 return _defaultStringTemplate;
             }
-            if (item is NotificationContent)
+            if (item is NotificationContent && _defaultNotificationTemplate != null)
             {
                 return _defaultNotificationTemplate;
             }

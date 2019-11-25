@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,10 +10,18 @@ namespace Notifications.Wpf.Core.Controls
 {
     public class NotificationArea : Control
     {
+        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
         public NotificationPosition Position
         {
-            get { return (NotificationPosition)GetValue(PositionProperty); }
-            set { SetValue(PositionProperty, value); }
+            get
+            {
+                return (NotificationPosition)GetValue(PositionProperty);
+            }
+            set
+            {
+                SetValue(PositionProperty, value);
+            }
         }
 
         // Using a DependencyProperty as the backing store for Position.  This enables animation, styling, binding, etc...
@@ -22,14 +30,20 @@ namespace Notifications.Wpf.Core.Controls
 
         public int MaxItems
         {
-            get { return (int)GetValue(MaxItemsProperty); }
-            set { SetValue(MaxItemsProperty, value); }
+            get
+            {
+                return (int)GetValue(MaxItemsProperty);
+            }
+            set
+            {
+                SetValue(MaxItemsProperty, value);
+            }
         }
 
         public static readonly DependencyProperty MaxItemsProperty =
             DependencyProperty.Register("MaxItems", typeof(int), typeof(NotificationArea), new PropertyMetadata(int.MaxValue));
 
-        private IList _items;
+        private IList? _items;
 
         public NotificationArea()
         {
@@ -49,30 +63,30 @@ namespace Notifications.Wpf.Core.Controls
             _items = itemsControl?.Children;
         }
 
-#if NET40
-        public void Show(object content, TimeSpan expirationTime, Action onClick, Action onClose)
-#else
-
-        public async void Show(object content, TimeSpan expirationTime, Action onClick, Action onClose)
-#endif
+        public async Task ShowAsync(object content, TimeSpan? expirationTime, Action? onClick, Action? onClose)
         {
             var notification = new Notification
             {
                 Content = content
             };
 
-            notification.MouseLeftButtonDown += (sender, args) =>
+            notification.MouseLeftButtonDown += async (sender, args) =>
             {
                 if (onClick != null)
                 {
                     onClick.Invoke();
-                    (sender as Notification)?.Close();
+
+                    if (sender is Notification senderNotification)
+                    {
+                        await senderNotification.CloseAsync();
+                    }
                 }
             };
+
             notification.NotificationClosed += (sender, args) => onClose?.Invoke();
             notification.NotificationClosed += OnNotificationClosed;
 
-            if (!IsLoaded)
+            if (!IsLoaded || _items == null)
             {
                 return;
             }
@@ -84,56 +98,36 @@ namespace Notifications.Wpf.Core.Controls
                 return;
             }
 
-            lock (_items)
+            await semaphore.WaitAsync();
+
+            try
             {
                 _items.Add(notification);
 
                 if (_items.OfType<Notification>().Count(i => !i.IsClosing) > MaxItems)
                 {
-                    _items.OfType<Notification>().First(i => !i.IsClosing).Close();
+                    await _items.OfType<Notification>().First(i => !i.IsClosing).CloseAsync();
                 }
             }
-
-#if NET40
-            DelayExecute(expirationTime, () =>
+            finally
             {
-#else
+                semaphore.Release();
+            }
+
             if (expirationTime == TimeSpan.MaxValue)
             {
                 return;
             }
-            await Task.Delay(expirationTime);
-#endif
-            notification.Close();
-#if NET40
-            });
-#endif
+
+            await Task.Delay(expirationTime ?? TimeSpan.FromSeconds(5));
+            await notification.CloseAsync();
         }
 
         private void OnNotificationClosed(object sender, RoutedEventArgs routedEventArgs)
         {
             var notification = sender as Notification;
-            _items.Remove(notification);
+            _items?.Remove(notification);
         }
-
-#if NET40
-        private static void DelayExecute(TimeSpan delay, Action actionToExecute)
-        {
-            if (actionToExecute != null)
-            {
-                var timer = new DispatcherTimer
-                {
-                    Interval = delay
-                };
-                timer.Tick += (sender, args) =>
-                {
-                    timer.Stop();
-                    actionToExecute();
-                };
-                timer.Start();
-            }
-        }
-#endif
     }
 
     public enum NotificationPosition

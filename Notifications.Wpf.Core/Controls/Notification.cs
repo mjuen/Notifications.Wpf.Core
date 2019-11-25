@@ -29,14 +29,28 @@ namespace Notifications.Wpf.Core.Controls
 
         public event RoutedEventHandler NotificationCloseInvoked
         {
-            add { AddHandler(NotificationCloseInvokedEvent, value); }
-            remove { RemoveHandler(NotificationCloseInvokedEvent, value); }
+            add
+            {
+                AddHandler(NotificationCloseInvokedEvent, value);
+            }
+
+            remove
+            {
+                RemoveHandler(NotificationCloseInvokedEvent, value);
+            }
         }
 
         public event RoutedEventHandler NotificationClosed
         {
-            add { AddHandler(NotificationClosedEvent, value); }
-            remove { RemoveHandler(NotificationClosedEvent, value); }
+            add
+            {
+                AddHandler(NotificationClosedEvent, value);
+            }
+
+            remove
+            {
+                RemoveHandler(NotificationClosedEvent, value);
+            }
         }
 
         public static bool GetCloseOnClick(DependencyObject obj)
@@ -54,46 +68,52 @@ namespace Notifications.Wpf.Core.Controls
 
         private static void CloseOnClickChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            var button = dependencyObject as Button;
-            if (button == null)
+            if (dependencyObject is Button button)
             {
-                return;
-            }
+                var value = (bool)dependencyPropertyChangedEventArgs.NewValue;
 
-            var value = (bool)dependencyPropertyChangedEventArgs.NewValue;
-
-            if (value)
-            {
-                button.Click += (sender, args) =>
+                if (value)
                 {
-                    var notification = VisualTreeHelperExtensions.GetParent<Notification>(button);
-                    notification?.Close();
-                };
+                    button.Click += async (sender, args) =>
+                    {
+                        var notification = VisualTreeHelperExtensions.GetParent<Notification>(button);
+
+                        if (notification != null)
+                        {
+                            await notification.CloseAsync();
+                        }
+                    };
+                }
             }
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            var closeButton = GetTemplateChild("PART_CloseButton") as Button;
-            if (closeButton != null)
-                closeButton.Click += OnCloseButtonOnClick;
 
-            var storyboards = Template.Triggers.OfType<EventTrigger>().FirstOrDefault(t => t.RoutedEvent == NotificationCloseInvokedEvent)?.Actions.OfType<BeginStoryboard>().Select(a => a.Storyboard);
-            _closingAnimationTime = new TimeSpan(storyboards?.Max(s => Math.Min((s.Duration.HasTimeSpan ? s.Duration.TimeSpan + (s.BeginTime ?? TimeSpan.Zero) : TimeSpan.MaxValue).Ticks, s.Children.Select(ch => ch.Duration.TimeSpan + (s.BeginTime ?? TimeSpan.Zero)).Max().Ticks)) ?? 0);
+            if (GetTemplateChild("PART_CloseButton") is Button closeButton)
+            {
+                closeButton.Click += OnCloseButtonOnClickAsync;
+            }
+
+            var storyboards = Template.Triggers.OfType<EventTrigger>()
+                .FirstOrDefault(t => t.RoutedEvent == NotificationCloseInvokedEvent)?.Actions.OfType<BeginStoryboard>()
+                .Select(a => a.Storyboard);
+
+            _closingAnimationTime = new TimeSpan(storyboards?.Max(s => Math.Min((s.Duration.HasTimeSpan ? s.Duration.TimeSpan + (s.BeginTime ?? TimeSpan.Zero) : TimeSpan.MaxValue).Ticks,
+                s.Children.Select(ch => ch.Duration.TimeSpan + (s.BeginTime ?? TimeSpan.Zero)).Max().Ticks)) ?? 0);
         }
 
-        private void OnCloseButtonOnClick(object sender, RoutedEventArgs args)
+        private async void OnCloseButtonOnClickAsync(object sender, RoutedEventArgs args)
         {
-            var button = sender as Button;
-            if (button == null) return;
-
-            button.Click -= OnCloseButtonOnClick;
-            Close();
+            if (sender is Button button)
+            {
+                button.Click -= OnCloseButtonOnClickAsync;
+                await CloseAsync();
+            }
         }
 
-        //TODO: .NET40
-        public async void Close()
+        public async Task CloseAsync()
         {
             if (IsClosing)
             {

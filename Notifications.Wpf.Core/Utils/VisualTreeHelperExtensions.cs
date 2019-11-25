@@ -5,14 +5,16 @@ namespace Notifications.Wpf.Core.Utils
 {
     internal static class VisualTreeHelperExtensions
     {
-        public static T GetParent<T>(DependencyObject child) where T : DependencyObject
+        public static T? GetParent<T>(DependencyObject child) where T : DependencyObject
         {
             var parent = VisualTreeHelper.GetParent(child);
 
-            if (parent == null) return null;
+            if (parent == null)
+            {
+                return null;
+            }
 
-            var tParent = parent as T;
-            if (tParent != null)
+            if (parent is T tParent)
             {
                 return tParent;
             }

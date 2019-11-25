@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -9,11 +10,12 @@ namespace Notifications.Wpf.Core
 {
     public class NotificationManager : INotificationManager
     {
-        private readonly Dispatcher _dispatcher;
         private static readonly List<NotificationArea> Areas = new List<NotificationArea>();
-        private static NotificationsOverlayWindow _window;
 
-        public NotificationManager(Dispatcher dispatcher = null)
+        private readonly Dispatcher _dispatcher;
+        private static NotificationsOverlayWindow? _window;
+
+        public NotificationManager(Dispatcher? dispatcher = null)
         {
             if (dispatcher == null)
             {
@@ -23,13 +25,13 @@ namespace Notifications.Wpf.Core
             _dispatcher = dispatcher;
         }
 
-        public void Show(object content, string areaName = "", TimeSpan? expirationTime = null, Action onClick = null,
-            Action onClose = null)
+        public async Task ShowAsync(object content, string areaName = "", TimeSpan? expirationTime = null, Action? onClick = null,
+            Action? onClose = null)
         {
             if (!_dispatcher.CheckAccess())
             {
-                _dispatcher.BeginInvoke(
-                    new Action(() => Show(content, areaName, expirationTime, onClick, onClose)));
+                await _dispatcher.BeginInvoke(
+                    new Action(async () => await ShowAsync(content, areaName, expirationTime, onClick, onClose)));
                 return;
             }
 
@@ -50,9 +52,9 @@ namespace Notifications.Wpf.Core
                 _window.Show();
             }
 
-            foreach (var area in Areas.Where(a => a.Name == areaName))
+            foreach (var area in Areas.Where(a => a.Name == areaName).ToList())
             {
-                area.Show(content, (TimeSpan)expirationTime, onClick, onClose);
+                await area.ShowAsync(content, (TimeSpan)expirationTime, onClick, onClose);
             }
         }
 

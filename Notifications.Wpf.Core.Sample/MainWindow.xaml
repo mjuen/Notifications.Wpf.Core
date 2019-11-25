@@ -9,8 +9,8 @@
         Title="MainWindow" Height="450" Width="800">
     <DockPanel>
         <UniformGrid DockPanel.Dock="Bottom" Rows="1">
-            <Button Content="Show" Click="Button_Click" />
-            <Button Content="Show in window" Click="Button_Click_1" />
+            <Button Content="Show" Click="Show_Click" />
+            <Button Content="Show in window" Click="ShowWindow_Click" />
         </UniformGrid>
         <controls:NotificationArea x:Name="WindowArea" Position="TopLeft" MaxItems="3" />
     </DockPanel>

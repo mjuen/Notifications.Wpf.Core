@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using System;
+using System.Threading.Tasks;
 
 namespace Notifications.Wpf.Core.Caliburn.Micro.Sample.ViewModels
 {
@@ -12,7 +13,7 @@ namespace Notifications.Wpf.Core.Caliburn.Micro.Sample.ViewModels
             _manager = manager;
         }
 
-        public void Show()
+        public async Task Show()
         {
             var content = new NotificationViewModel(_manager)
             {
@@ -20,12 +21,12 @@ namespace Notifications.Wpf.Core.Caliburn.Micro.Sample.ViewModels
                 Message = "Click on buttons!"
             };
 
-            _manager.Show(content, expirationTime: TimeSpan.FromSeconds(30));
+            await _manager.ShowAsync(content, expirationTime: TimeSpan.FromSeconds(30));
         }
 
-        public void ShowInWindow()
+        public async Task ShowInWindow()
         {
-            _manager.Show(new NotificationContent { Title = "Message", Message = "Message in window" }, areaName: "WindowArea");
+            await _manager.ShowAsync(new NotificationContent { Title = "Message", Message = "Message in window" }, areaName: "WindowArea");
         }
     }
 }
