@@ -19,6 +19,11 @@ namespace Notifications.Wpf.Core.Sample
             Timer timer = new Timer { Interval = 3000 };
             timer.Elapsed += async (sender, args) => await _notificationManager.ShowAsync("Pink string from another thread!");
             timer.Start();
+
+            Closing += (s, e) =>
+            {
+                _notificationManager?.Dispose();
+            };
         }
 
         private async void Show_Click(object sender, RoutedEventArgs e)

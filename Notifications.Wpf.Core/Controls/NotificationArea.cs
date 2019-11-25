@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace Notifications.Wpf.Core.Controls
 {
-    public class NotificationArea : Control
+    public class NotificationArea : Control, IDisposable
     {
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
@@ -127,6 +127,11 @@ namespace Notifications.Wpf.Core.Controls
         {
             var notification = sender as Notification;
             _items?.Remove(notification);
+        }
+
+        public void Dispose()
+        {
+            semaphore?.Dispose();
         }
     }
 
