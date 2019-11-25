@@ -1,10 +1,13 @@
-# Notifications.Wpf
-WPF toast notifications.
+# Notifications.Wpf.Core
+WPF toast notifications with .NET Core 3.0. 
+
+This is a fork of ![Notifications.Wpf](https://github.com/Federerer/Notifications.Wpf)
 
 ![Demo](http://i.imgur.com/UvYIVFV.gif)
+
 ### Installation:
 ```
-Install-Package Notifications.Wpf
+Install-Package Notifications.Wpf.Core
 ```
 ### Usage:
 
@@ -12,7 +15,7 @@ Install-Package Notifications.Wpf
 ```C#
 var notificationManager = new NotificationManager();
 
-notificationManager.Show(new NotificationContent
+await notificationManager.ShowAsync(new NotificationContent
            {
                Title = "Sample notification",
                Message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -31,14 +34,14 @@ xmlns:notifications="clr-namespace:Notifications.Wpf.Controls;assembly=Notificat
 ```
 - Displaying notification:
 ```C#
-notificationManager.Show(
+await notificationManager.ShowAsync(
                 new NotificationContent {Title = "Notification", Message = "Notification in window!"},
                 areaName: "WindowArea");
 ```
 
 #### Simple text with OnClick & OnClose actions:
 ```C#
-notificationManager.Show("String notification", onClick: () => Console.WriteLine("Click"),
+await notificationManager.ShowAsync("String notification", onClick: () => Console.WriteLine("Click"),
                onClose: () => Console.WriteLine("Closed!"));
 ```
 ### Caliburn.Micro MVVM support:
@@ -65,7 +68,7 @@ var content = new NotificationViewModel(_manager)
     Message = "Click on buttons!"
 };
 
-_manager.Show(content, expirationTime: TimeSpan.FromSeconds(30));
+await _manager.ShowAsync(content, expirationTime: TimeSpan.FromSeconds(30));
 ```
 - NotificationView:
 ```XAML
