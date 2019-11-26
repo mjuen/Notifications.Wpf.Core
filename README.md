@@ -26,7 +26,7 @@ await notificationManager.ShowAsync(new NotificationContent
 #### Notification inside application window:
 - Adding namespace:
 ```XAML
-xmlns:notifications="clr-namespace:Notifications.Wpf.Controls;assembly=Notifications.Wpf"
+xmlns:notifications="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Notifications.Wpf.Core"
 ```
 - Adding new NotificationArea:
 ```XAML
@@ -47,7 +47,7 @@ await notificationManager.ShowAsync("String notification", onClick: () => Consol
 ### Caliburn.Micro MVVM support:
 - App.xaml:
 ```XAML
-xmlns:controls="clr-namespace:Notifications.Wpf.Controls;assembly=Notifications.Wpf"
+xmlns:controls="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Notifications.Wpf.Core"
 
 <Application.Resources>
     [...]
