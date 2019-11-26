@@ -23,6 +23,12 @@ await notificationManager.ShowAsync(new NotificationContent
            });
 ```
 
+You can also alter this position by passing the desired position as an argument
+
+```C#
+var notificationManager = new NotificationManager(NotificationPosition.TopRight);
+```
+
 #### Notification inside application window:
 - Adding namespace:
 ```XAML
