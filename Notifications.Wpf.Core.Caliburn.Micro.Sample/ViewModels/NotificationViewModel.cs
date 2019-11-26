@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Notifications.Wpf.Core.Caliburn.Micro.Sample.ViewModels
 {
-    public class NotificationViewModel : PropertyChangedBase
+    public class NotificationViewModel : PropertyChangedBase, INotificationViewModel
     {
         private readonly INotificationManager _manager;
 
