@@ -67,8 +67,10 @@ xmlns:controls="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Notificat
 </Application.Resources>
 ```
 - NotificationViewModel:
+
+The used view model must implement `INotificationViewModel`
+
 ```C#
-// ViewModel must implement INotificationViewModel
 public class NotificationViewModel : PropertyChangedBase, INotificationViewModel
     {
         private readonly INotificationManager _manager;
