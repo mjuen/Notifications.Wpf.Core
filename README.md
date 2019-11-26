@@ -3,7 +3,7 @@ Toast notifications for WPF apps based on .NET Core 3.0
 
 This is a fork of ![Notifications.Wpf](https://github.com/Federerer/Notifications.Wpf)
 
-![Demo](http://i.imgur.com/UvYIVFV.gif)
+![Demo](https://i.imgur.com/UvYIVFV.gif)
 
 ### Installation:
 ```
@@ -80,4 +80,4 @@ await _manager.ShowAsync(content, expirationTime: TimeSpan.FromSeconds(30));
 ```
 - Result:
 
-![Demo](http://i.imgur.com/G1ZU2ID.gif)
+![Demo](https://i.imgur.com/G1ZU2ID.gif)
