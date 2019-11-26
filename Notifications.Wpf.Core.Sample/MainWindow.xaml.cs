@@ -9,7 +9,7 @@ namespace Notifications.Wpf.Core.Sample
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly NotificationManager _notificationManager = new NotificationManager();
+        private readonly NotificationManager _notificationManager = new NotificationManager(Controls.NotificationPosition.TopRight);
         private readonly Random _random = new Random();
 
         public MainWindow()
@@ -22,7 +22,8 @@ namespace Notifications.Wpf.Core.Sample
 
             Closing += (s, e) =>
             {
-                _notificationManager?.Dispose();
+                timer.Stop();
+                timer.Dispose();
             };
         }
 

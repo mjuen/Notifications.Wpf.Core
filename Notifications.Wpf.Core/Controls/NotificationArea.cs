@@ -8,9 +8,9 @@ using System.Windows.Controls;
 
 namespace Notifications.Wpf.Core.Controls
 {
-    public class NotificationArea : Control, IDisposable
+    public class NotificationArea : Control
     {
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
         public NotificationPosition Position
         {
@@ -48,6 +48,14 @@ namespace Notifications.Wpf.Core.Controls
         public NotificationArea()
         {
             NotificationManager.AddArea(this);
+            Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+        }
+
+        private void Dispatcher_ShutdownStarted(object? sender, EventArgs e)
+        {
+            // Clean up resources
+            NotificationManager.RemoveArea(this);
+            _semaphore?.Dispose();
         }
 
         static NotificationArea()
@@ -63,7 +71,7 @@ namespace Notifications.Wpf.Core.Controls
             _items = itemsControl?.Children;
         }
 
-        public async Task ShowAsync(object content, TimeSpan? expirationTime, Action? onClick, Action? onClose, CancellationToken token)
+        public async Task ShowAsync(object content, TimeSpan expirationTime, Action? onClick, Action? onClose, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
             {
@@ -104,54 +112,45 @@ namespace Notifications.Wpf.Core.Controls
                 return;
             }
 
-            await semaphore.WaitAsync(token);
-
-            if (token.IsCancellationRequested)
-                return;
-
             try
             {
-                _items.Add(notification);
+                await _semaphore.WaitAsync(token);
 
-                if (_items.OfType<Notification>().Count(i => !i.IsClosing) > MaxItems)
+                try
                 {
-                    await _items.OfType<Notification>().First(i => !i.IsClosing).CloseAsync();
+                    if (token.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    _items.Add(notification);
+
+                    if (_items.OfType<Notification>().Count(i => !i.IsClosing) > MaxItems)
+                    {
+                        await _items.OfType<Notification>().First(i => !i.IsClosing).CloseAsync();
+                    }
+                }
+                finally
+                {
+                    _semaphore.Release();
                 }
             }
-            finally
-            {
-                semaphore.Release();
-            }
-
-            if (expirationTime == TimeSpan.MaxValue)
+            catch (ObjectDisposedException)
             {
                 return;
             }
 
-            await Task.Delay(expirationTime ?? TimeSpan.FromSeconds(5));
-            await notification.CloseAsync();
+            if (expirationTime != TimeSpan.MaxValue)
+            {
+                await Task.Delay(expirationTime);
+                await notification.CloseAsync();
+            }
         }
 
         private void OnNotificationClosed(object sender, RoutedEventArgs routedEventArgs)
         {
             var notification = sender as Notification;
             _items?.Remove(notification);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
-            {
-                return;
-            }
-
-            semaphore?.Dispose();
         }
     }
 

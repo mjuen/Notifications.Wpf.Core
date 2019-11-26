@@ -15,5 +15,5 @@
         ShowActivated="False"
         d:DesignWidth="900"
         d:DesignHeight="600">
-    <controls:NotificationArea Position="BottomRight" Margin="8" />
+    <controls:NotificationArea x:Name="NotificationsOverlayWindow_NotifyArea" Position="BottomRight" Margin="8" />
 </Window>

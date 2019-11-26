@@ -14,13 +14,14 @@ namespace Notifications.Wpf.Core
         private static readonly List<NotificationArea> Areas = new List<NotificationArea>();
         private static NotificationsOverlayWindow? _window;
 
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-        private readonly CancellationTokenSource token = new CancellationTokenSource();
-
         private readonly Dispatcher _dispatcher;
+        private readonly NotificationPosition _mainNotificationPosition;
 
-        public NotificationManager(Dispatcher? dispatcher = null)
+        public NotificationManager(NotificationPosition mainNotificationPosition = NotificationPosition.BottomRight,
+            Dispatcher? dispatcher = null)
         {
+            _mainNotificationPosition = mainNotificationPosition;
+
             if (dispatcher == null)
             {
                 dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
@@ -30,9 +31,9 @@ namespace Notifications.Wpf.Core
         }
 
         public async Task ShowAsync(object content, string areaName = "", TimeSpan? expirationTime = null, Action? onClick = null,
-            Action? onClose = null)
+            Action? onClose = null, CancellationToken token = default)
         {
-            if (token.Token.IsCancellationRequested)
+            if (token.IsCancellationRequested)
             {
                 return;
             }
@@ -49,42 +50,35 @@ namespace Notifications.Wpf.Core
                 expirationTime = TimeSpan.FromSeconds(5);
             }
 
-            if (areaName == string.Empty && _window == null)
+            if (areaName == string.Empty)
             {
-                var workArea = SystemParameters.WorkArea;
+                areaName = "NotificationsOverlayWindow_NotifyArea";
 
-                _window = new NotificationsOverlayWindow
+                if (_window == null)
                 {
-                    Left = workArea.Left,
-                    Top = workArea.Top,
-                    Width = workArea.Width,
-                    Height = workArea.Height
-                };
+                    var workArea = SystemParameters.WorkArea;
 
-                _window.Show();
+                    _window = new NotificationsOverlayWindow
+                    {
+                        Left = workArea.Left,
+                        Top = workArea.Top,
+                        Width = workArea.Width,
+                        Height = workArea.Height
+                    };
+
+                    _window.SetNotificationAreaPosition(_mainNotificationPosition);
+                    _window.Show();
+                }
             }
 
-            if (token.Token.IsCancellationRequested)
+            if (token.IsCancellationRequested)
             {
                 return;
             }
 
-            List<NotificationArea> selAreas;
-
-            await semaphore.WaitAsync();
-
-            try
+            foreach (var area in Areas.Where(a => a.Name == areaName).ToList())
             {
-                selAreas = Areas.Where(a => a.Name == areaName).ToList();
-            }
-            finally
-            {
-                semaphore.Release();
-            }
-
-            foreach (var area in selAreas)
-            {
-                await area.ShowAsync(content, (TimeSpan)expirationTime, onClick, onClose, token.Token);
+                await area.ShowAsync(content, (TimeSpan)expirationTime, onClick, onClose, token);
             }
         }
 
@@ -93,38 +87,9 @@ namespace Notifications.Wpf.Core
             Areas.Add(area);
         }
 
-        public void Dispose()
+        internal static void RemoveArea(NotificationArea area)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <param name="disposing">if true, get rid of managed ressources</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing || token.Token.IsCancellationRequested)
-            {
-                return;
-            }
-
-            token.Cancel();
-            _window?.Close();
-
-            semaphore.Wait();
-
-            try
-            {
-                while (Areas.Count > 0)
-                {
-                    Areas[0].Dispose();
-                    Areas.RemoveAt(0);
-                }
-            }
-            finally
-            {
-                semaphore.Release();
-                semaphore.Dispose();
-            }
+            Areas.Remove(area);
         }
     }
 }
