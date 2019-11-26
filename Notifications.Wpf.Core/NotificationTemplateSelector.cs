@@ -16,7 +16,7 @@ namespace Notifications.Wpf.Core
                     container?.FindResource("DefaultNotificationTemplate") as DataTemplate;
         }
 
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        public override DataTemplate? SelectTemplate(object item, DependencyObject container)
         {
             if (_defaultStringTemplate == null && _defaultNotificationTemplate == null)
             {

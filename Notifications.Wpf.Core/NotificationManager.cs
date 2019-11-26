@@ -11,12 +11,13 @@ namespace Notifications.Wpf.Core
 {
     public class NotificationManager : INotificationManager
     {
+        private static readonly List<NotificationArea> Areas = new List<NotificationArea>();
+        private static NotificationsOverlayWindow? _window;
+
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         private readonly CancellationTokenSource token = new CancellationTokenSource();
-        private static readonly List<NotificationArea> Areas = new List<NotificationArea>();
 
         private readonly Dispatcher _dispatcher;
-        private static NotificationsOverlayWindow? _window;
 
         public NotificationManager(Dispatcher? dispatcher = null)
         {
@@ -32,7 +33,9 @@ namespace Notifications.Wpf.Core
             Action? onClose = null)
         {
             if (token.Token.IsCancellationRequested)
+            {
                 return;
+            }
 
             if (!_dispatcher.CheckAccess())
             {
@@ -41,7 +44,10 @@ namespace Notifications.Wpf.Core
                 return;
             }
 
-            if (expirationTime == null) expirationTime = TimeSpan.FromSeconds(5);
+            if (expirationTime == null)
+            {
+                expirationTime = TimeSpan.FromSeconds(5);
+            }
 
             if (areaName == string.Empty && _window == null)
             {
@@ -59,11 +65,22 @@ namespace Notifications.Wpf.Core
             }
 
             if (token.Token.IsCancellationRequested)
+            {
                 return;
+            }
+
+            List<NotificationArea> selAreas;
 
             await semaphore.WaitAsync();
-            var selAreas = Areas.Where(a => a.Name == areaName).ToList();
-            semaphore.Release();
+
+            try
+            {
+                selAreas = Areas.Where(a => a.Name == areaName).ToList();
+            }
+            finally
+            {
+                semaphore.Release();
+            }
 
             foreach (var area in selAreas)
             {
@@ -86,20 +103,28 @@ namespace Notifications.Wpf.Core
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing || token.Token.IsCancellationRequested)
+            {
                 return;
+            }
 
             token.Cancel();
-
             _window?.Close();
 
             semaphore.Wait();
-            while (Areas.Count > 0)
+
+            try
             {
-                Areas[0].Dispose();
-                Areas.RemoveAt(0);
+                while (Areas.Count > 0)
+                {
+                    Areas[0].Dispose();
+                    Areas.RemoveAt(0);
+                }
             }
-            semaphore.Release();
-            semaphore.Dispose();
+            finally
+            {
+                semaphore.Release();
+                semaphore.Dispose();
+            }
         }
     }
 }

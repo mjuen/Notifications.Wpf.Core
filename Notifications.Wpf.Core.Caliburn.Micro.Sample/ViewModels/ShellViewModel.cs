@@ -13,7 +13,7 @@ namespace Notifications.Wpf.Core.Caliburn.Micro.Sample.ViewModels
             _manager = manager;
         }
 
-        public async Task Show()
+        public async Task ShowNotification()
         {
             var content = new NotificationViewModel(_manager)
             {
@@ -24,7 +24,7 @@ namespace Notifications.Wpf.Core.Caliburn.Micro.Sample.ViewModels
             await _manager.ShowAsync(content, expirationTime: TimeSpan.FromSeconds(30));
         }
 
-        public async Task ShowInWindow()
+        public async Task ShowNotificationInWindow()
         {
             await _manager.ShowAsync(new NotificationContent { Title = "Message", Message = "Message in window" }, areaName: "WindowArea");
         }

@@ -66,7 +66,9 @@ namespace Notifications.Wpf.Core.Controls
         public async Task ShowAsync(object content, TimeSpan? expirationTime, Action? onClick, Action? onClose, CancellationToken token)
         {
             if (token.IsCancellationRequested)
+            {
                 return;
+            }
 
             var notification = new Notification
             {
@@ -96,6 +98,7 @@ namespace Notifications.Wpf.Core.Controls
 
             var w = Window.GetWindow(this);
             var x = PresentationSource.FromVisual(w);
+
             if (x == null)
             {
                 return;
@@ -144,7 +147,9 @@ namespace Notifications.Wpf.Core.Controls
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing)
+            {
                 return;
+            }
 
             semaphore?.Dispose();
         }

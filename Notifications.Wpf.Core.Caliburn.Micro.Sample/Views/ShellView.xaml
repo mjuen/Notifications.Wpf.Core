@@ -9,9 +9,9 @@
         Title="ShellView" Height="450" Width="800">
     <DockPanel>
         <UniformGrid DockPanel.Dock="Bottom" Rows="1">
-            <Button x:Name="Show" Content="Show" />
-            <Button x:Name="ShowInWindow" Content="Show in window" />
+            <Button x:Name="ShowNotification" Content="Show" />
+            <Button x:Name="ShowNotificationInWindow" Content="Show in window" />
         </UniformGrid>
-        <controls:NotificationArea x:Name="WindowArea" Position="TopLeft" MaxItems="3"/>
+        <controls:NotificationArea x:Name="WindowArea" Position="TopLeft" MaxItems="3" />
     </DockPanel>
 </Window>
