@@ -17,8 +17,20 @@ namespace Notifications.Wpf.Core
         private readonly Dispatcher _dispatcher;
         private readonly NotificationPosition _mainNotificationPosition;
 
-        public NotificationManager(NotificationPosition mainNotificationPosition = NotificationPosition.BottomRight,
-            Dispatcher? dispatcher = null)
+        public NotificationManager() : this(NotificationPosition.BottomRight, null)
+        {
+        }
+
+        public NotificationManager(NotificationPosition mainNotificationPosition) : this(mainNotificationPosition, null)
+        {
+        }
+
+        public NotificationManager(Dispatcher? dispatcher) : this(NotificationPosition.BottomRight, dispatcher)
+        {
+        }
+
+        public NotificationManager(NotificationPosition mainNotificationPosition,
+            Dispatcher? dispatcher)
         {
             _mainNotificationPosition = mainNotificationPosition;
 
