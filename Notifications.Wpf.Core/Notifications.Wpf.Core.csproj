@@ -6,6 +6,14 @@
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Notifications.Wpf.Core</PackageId>
+    <Authors>Adrian Gaś, Simon Mauracher, Marcel Juen</Authors>
+    <Company />
+    <Description>Toast notifications for WPF apps based on .NET Core 3.0. This is a fork of Notifications.Wpf by Adrian Gaś</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/mjuen/Notifications.Wpf.Core</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/mjuen/Notifications.Wpf.Core/master/Resources/icon.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/mjuen/Notifications.Wpf.Core</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
