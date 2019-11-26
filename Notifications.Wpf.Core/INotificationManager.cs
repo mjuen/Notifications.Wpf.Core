@@ -31,7 +31,7 @@ namespace Notifications.Wpf.Core
         /// <summary>
         ///
         /// </summary>
-        /// <typeparam name="TViewModel"></typeparam>
+        /// <typeparam name="TViewModel">Must implement <see cref="INotificationViewModel"/></typeparam>
         /// <param name="viewModel">A Caliburn Micro view model that should be used. Must implement <see cref="INotificationViewModel"/></param>
         /// <param name="areaName">The name of the area in which the toast should appear</param>
         /// <param name="expirationTime">A <see cref="TimeSpan"/> after which the toast disappears</param>
