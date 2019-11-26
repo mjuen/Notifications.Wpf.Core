@@ -121,7 +121,8 @@ namespace Notifications.Wpf.Core
                         Left = workArea.Left,
                         Top = workArea.Top,
                         Width = workArea.Width,
-                        Height = workArea.Height
+                        Height = workArea.Height,
+                        Owner = Application.Current.MainWindow
                     };
 
                     _window.SetNotificationAreaPosition(_mainNotificationPosition);
