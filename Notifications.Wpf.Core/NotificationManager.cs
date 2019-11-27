@@ -60,18 +60,18 @@ namespace Notifications.Wpf.Core
             _dispatcher = dispatcher;
         }
 
-        public async Task ShowAsync(string text, string areaName = "", TimeSpan? expirationTime = null, Action? onClick = null, Action? onClose = null, CancellationToken token = default)
+        public async Task ShowAsync(string text, string? areaName = null, TimeSpan? expirationTime = null, Action? onClick = null, Action? onClose = null, CancellationToken token = default)
         {
             await InternalShowAsync(text, areaName, expirationTime, onClick, onClose, token);
         }
 
-        public async Task ShowAsync(NotificationContent content, string areaName = "", TimeSpan? expirationTime = null,
+        public async Task ShowAsync(NotificationContent content, string? areaName = null, TimeSpan? expirationTime = null,
             Action? onClick = null, Action? onClose = null, CancellationToken token = default)
         {
             await InternalShowAsync(content, areaName, expirationTime, onClick, onClose, token);
         }
 
-        public async Task ShowAsync<TViewModel>(TViewModel viewModel, string areaName = "", TimeSpan? expirationTime = null,
+        public async Task ShowAsync<TViewModel>(TViewModel viewModel, string? areaName = null, TimeSpan? expirationTime = null,
             Action? onClick = null, Action? onClose = null, CancellationToken token = default)
             where TViewModel : INotificationViewModel
         {
@@ -88,7 +88,7 @@ namespace Notifications.Wpf.Core
             Areas.Remove(area);
         }
 
-        private async Task InternalShowAsync(object content, string areaName, TimeSpan? expirationTime, Action? onClick,
+        private async Task InternalShowAsync(object content, string? areaName, TimeSpan? expirationTime, Action? onClick,
            Action? onClose, CancellationToken token)
         {
             if (token.IsCancellationRequested)
@@ -108,7 +108,7 @@ namespace Notifications.Wpf.Core
                 expirationTime = TimeSpan.FromSeconds(5);
             }
 
-            if (areaName == string.Empty)
+            if (string.IsNullOrEmpty(areaName))
             {
                 areaName = "NotificationsOverlayWindow_NotifyArea";
 

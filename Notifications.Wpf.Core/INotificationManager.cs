@@ -14,7 +14,7 @@ namespace Notifications.Wpf.Core
         /// <param name="expirationTime">A <see cref="TimeSpan"/> after which the toast disappears</param>
         /// <param name="onClick">An action that is triggered when the toast is clicked</param>
         /// <param name="onClose">An action that is triggered when the toast closes</param>
-        Task ShowAsync(string text, string areaName = "", TimeSpan? expirationTime = null, Action? onClick = null, Action? onClose = null,
+        Task ShowAsync(string text, string? areaName = null, TimeSpan? expirationTime = null, Action? onClick = null, Action? onClose = null,
                 CancellationToken token = default);
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Notifications.Wpf.Core
         /// <param name="expirationTime">A <see cref="TimeSpan"/> after which the toast disappears</param>
         /// <param name="onClick">An action that is triggered when the toast is clicked</param>
         /// <param name="onClose">An action that is triggered when the toast closes</param>
-        Task ShowAsync(NotificationContent content, string areaName = "", TimeSpan? expirationTime = null, Action? onClick = null, Action? onClose = null,
+        Task ShowAsync(NotificationContent content, string? areaName = null, TimeSpan? expirationTime = null, Action? onClick = null, Action? onClose = null,
                 CancellationToken token = default);
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Notifications.Wpf.Core
         /// <param name="expirationTime">A <see cref="TimeSpan"/> after which the toast disappears</param>
         /// <param name="onClick">An action that is triggered when the toast is clicked</param>
         /// <param name="onClose">An action that is triggered when the toast closes</param>
-        Task ShowAsync<TViewModel>(TViewModel viewModel, string areaName = "", TimeSpan? expirationTime = null, Action? onClick = null, Action? onClose = null,
+        Task ShowAsync<TViewModel>(TViewModel viewModel, string? areaName = null, TimeSpan? expirationTime = null, Action? onClick = null, Action? onClose = null,
                 CancellationToken token = default) where TViewModel : INotificationViewModel;
     }
 }
