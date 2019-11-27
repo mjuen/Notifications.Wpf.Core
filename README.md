@@ -1,6 +1,6 @@
 # Notifications.Wpf.Core
 
-[![Version](https://img.shields.io/nuget/v/Notifications.Wpf.Core.svg)](https://www.nuget.org/packages/Notifications.Wpf.Core)  [![Downloads](https://img.shields.io/nuget/dt/Notifications.Wpf.Core.svg)](https://www.nuget.org/package/Notifications.Wpf.Core)
+[![Version](https://img.shields.io/nuget/v/Notifications.Wpf.Core.svg)](https://www.nuget.org/packages/Notifications.Wpf.Core)  [![Downloads](https://img.shields.io/nuget/dt/Notifications.Wpf.Core.svg)](https://www.nuget.org/packages/Notifications.Wpf.Core)
 
 Toast notifications for WPF apps based on .NET Core 3.0  
 
