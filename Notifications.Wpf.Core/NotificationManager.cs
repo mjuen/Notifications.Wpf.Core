@@ -135,7 +135,7 @@ namespace Notifications.Wpf.Core
                 return;
             }
 
-            foreach (var area in Areas.Where(a => a.Name == areaName).ToList())
+            foreach (var area in Areas.Where(a => a.Identifier == areaName).ToList())
             {
                 await area.ShowAsync(content, (TimeSpan)expirationTime, onClick, onClose, token);
             }

@@ -26,7 +26,8 @@ namespace Notifications.Wpf.Core.Controls
 
         // Using a DependencyProperty as the backing store for Position.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PositionProperty =
-            DependencyProperty.Register("Position", typeof(NotificationPosition), typeof(NotificationArea), new PropertyMetadata(NotificationPosition.BottomRight));
+            DependencyProperty.Register(nameof(Position), typeof(NotificationPosition), typeof(NotificationArea),
+                new PropertyMetadata(NotificationPosition.BottomRight));
 
         public int MaxItems
         {
@@ -41,7 +42,31 @@ namespace Notifications.Wpf.Core.Controls
         }
 
         public static readonly DependencyProperty MaxItemsProperty =
-            DependencyProperty.Register("MaxItems", typeof(int), typeof(NotificationArea), new PropertyMetadata(int.MaxValue));
+            DependencyProperty.Register(nameof(MaxItems), typeof(int), typeof(NotificationArea),
+                new PropertyMetadata(int.MaxValue));
+
+        public string? BindableName
+        {
+            get
+            {
+                return (string?)GetValue(BindableNameProperty);
+            }
+            set
+            {
+                SetValue(BindableNameProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty BindableNameProperty =
+            DependencyProperty.Register(nameof(BindableName), typeof(string), typeof(NotificationArea), new PropertyMetadata(null));
+
+        public string Identifier
+        {
+            get
+            {
+                return BindableName ?? Name;
+            }
+        }
 
         private IList? _items;
 
