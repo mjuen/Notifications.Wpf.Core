@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/nuget/v/Notifications.Wpf.Core.svg)](https://www.nuget.org/packages/Notifications.Wpf.Core)  [![Downloads](https://img.shields.io/nuget/dt/Notifications.Wpf.Core.svg)](https://www.nuget.org/packages/Notifications.Wpf.Core)
 
-Toast notifications for WPF apps based on .NET Core 3.0  
+Toast notifications for WPF apps based on .NET Core 3.1  
 
 This is a fork of ![Notifications.Wpf](https://github.com/Federerer/Notifications.Wpf)
 
