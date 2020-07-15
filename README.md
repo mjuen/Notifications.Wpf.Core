@@ -62,7 +62,8 @@ Sometimes it comes in handy if you can close specific notifications via code. To
 
 var identifier = Guid.NewGuid(); 
 
-await notificationManager.ShowAsync(identifier, "I'm here to stay", expirationTime: TimeSpan.MaxValue, 
+await notificationManager.ShowAsync(identifier, "I'm here to stay", 
+           expirationTime: TimeSpan.MaxValue, 
            onClose: (identifier) => {
     NotifySomeoneAboutClose(identifier);
 });
