@@ -52,5 +52,10 @@ namespace Notifications.Wpf.Core.Sample
 
             await _notificationManager.ShowAsync(content, "WindowArea", onClick: async () => await _notificationManager.ShowAsync(clickContent));
         }
+
+        private async void CloseAll_Click(object sender, RoutedEventArgs e)
+        {
+            await _notificationManager.CloseAllAsync();
+        }
     }
 }

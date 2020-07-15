@@ -60,22 +60,49 @@ namespace Notifications.Wpf.Core
             _dispatcher = dispatcher;
         }
 
-        public async Task ShowAsync(string text, string? areaName = null, TimeSpan? expirationTime = null, Action? onClick = null, Action? onClose = null, CancellationToken token = default)
+        public async Task ShowAsync(string text, string? areaName = null, TimeSpan? expirationTime = null, Action? onClick = null,
+            Action? onClose = null, CancellationToken token = default)
         {
-            await InternalShowAsync(text, areaName, expirationTime, onClick, onClose, token);
+            await ShowAsync(Guid.NewGuid(), text, areaName, expirationTime,
+                (i) => onClick?.Invoke(), (i) => onClose?.Invoke(), token);
+        }
+
+        public async Task ShowAsync(Guid identifier, string text, string? areaName = null, TimeSpan? expirationTime = null,
+            Action<Guid>? onClick = null, Action<Guid>? onClose = null, CancellationToken token = default)
+        {
+            await InternalShowAsync(identifier, text, areaName, expirationTime,
+                onClick, onClose, token);
         }
 
         public async Task ShowAsync(NotificationContent content, string? areaName = null, TimeSpan? expirationTime = null,
             Action? onClick = null, Action? onClose = null, CancellationToken token = default)
         {
-            await InternalShowAsync(content, areaName, expirationTime, onClick, onClose, token);
+            await ShowAsync(Guid.NewGuid(), content, areaName, expirationTime,
+                (i) => onClick?.Invoke(), (i) => onClose?.Invoke(), token);
+        }
+
+        public async Task ShowAsync(Guid identifier, NotificationContent content, string? areaName = null, TimeSpan? expirationTime = null,
+            Action<Guid>? onClick = null, Action<Guid>? onClose = null, CancellationToken token = default)
+        {
+            await InternalShowAsync(identifier, content, areaName, expirationTime,
+                onClick, onClose, token);
         }
 
         public async Task ShowAsync<TViewModel>(TViewModel viewModel, string? areaName = null, TimeSpan? expirationTime = null,
             Action? onClick = null, Action? onClose = null, CancellationToken token = default)
             where TViewModel : INotificationViewModel
         {
-            await InternalShowAsync(viewModel, areaName, expirationTime, onClick, onClose, token);
+            await ShowAsync(Guid.NewGuid(), viewModel, areaName, expirationTime,
+                (i) => onClick?.Invoke(), (i) => onClose?.Invoke(), token);
+        }
+
+        public async Task ShowAsync<TViewModel>(Guid identifier, TViewModel viewModel, string? areaName = null, TimeSpan? expirationTime = null,
+            Action<Guid>? onClick = null, Action<Guid>? onClose = null, CancellationToken token = default) where TViewModel : INotificationViewModel
+        {
+            viewModel.SetNotificationIdentifier(identifier);
+
+            await InternalShowAsync(identifier, viewModel, areaName, expirationTime,
+                onClick, onClose, token);
         }
 
         internal static void AddArea(NotificationArea area)
@@ -88,8 +115,8 @@ namespace Notifications.Wpf.Core
             Areas.Remove(area);
         }
 
-        private async Task InternalShowAsync(object content, string? areaName, TimeSpan? expirationTime, Action? onClick,
-           Action? onClose, CancellationToken token)
+        private async Task InternalShowAsync(Guid identifier, object content, string? areaName, TimeSpan? expirationTime, Action<Guid>? onClick,
+           Action<Guid>? onClose, CancellationToken token)
         {
             if (token.IsCancellationRequested)
             {
@@ -99,7 +126,7 @@ namespace Notifications.Wpf.Core
             if (!_dispatcher.CheckAccess())
             {
                 await _dispatcher.BeginInvoke(
-                    new Action(async () => await InternalShowAsync(content, areaName, expirationTime, onClick, onClose, token)));
+                    new Action(async () => await InternalShowAsync(identifier, content, areaName, expirationTime, onClick, onClose, token)));
                 return;
             }
 
@@ -137,7 +164,23 @@ namespace Notifications.Wpf.Core
 
             foreach (var area in Areas.Where(a => a.Identifier == areaName).ToList())
             {
-                await area.ShowAsync(content, (TimeSpan)expirationTime, onClick, onClose, token);
+                await area.ShowAsync(identifier, content, (TimeSpan)expirationTime, onClick, onClose, token);
+            }
+        }
+
+        public async Task CloseAsync(Guid identifier)
+        {
+            foreach (var area in Areas.ToList())
+            {
+                await area.CloseAsync(identifier);
+            }
+        }
+
+        public async Task CloseAllAsync()
+        {
+            foreach (var area in Areas.ToList())
+            {
+                await area.CloseAllAsync();
             }
         }
     }

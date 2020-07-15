@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -96,14 +97,20 @@ namespace Notifications.Wpf.Core.Controls
             _items = itemsControl?.Children;
         }
 
+        [Obsolete("This method is deprecated. Please use the new ShowAsync that includes an identifier instead", false)]
         public async Task ShowAsync(object content, TimeSpan expirationTime, Action? onClick, Action? onClose, CancellationToken token = default)
+        {
+            await ShowAsync(Guid.NewGuid(), content, expirationTime, (i) => onClick?.Invoke(), (i) => onClose?.Invoke(), token);
+        }
+
+        public async Task ShowAsync(Guid identifier, object content, TimeSpan expirationTime, Action<Guid>? onClick, Action<Guid>? onClose, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
             {
                 return;
             }
 
-            var notification = new Notification
+            var notification = new Notification(identifier)
             {
                 Content = content
             };
@@ -112,7 +119,7 @@ namespace Notifications.Wpf.Core.Controls
             {
                 if (onClick != null)
                 {
-                    onClick.Invoke();
+                    onClick.Invoke(identifier);
 
                     if (sender is Notification senderNotification)
                     {
@@ -121,7 +128,7 @@ namespace Notifications.Wpf.Core.Controls
                 }
             };
 
-            notification.NotificationClosed += (sender, args) => onClose?.Invoke();
+            notification.NotificationClosed += (sender, args) => onClose?.Invoke(identifier);
             notification.NotificationClosed += OnNotificationClosed;
 
             if (!IsLoaded || _items == null)
@@ -169,6 +176,31 @@ namespace Notifications.Wpf.Core.Controls
             {
                 await Task.Delay(expirationTime);
                 await notification.CloseAsync();
+            }
+        }
+
+        public async Task CloseAsync(Guid identifier)
+        {
+            var notifications = _items.OfType<Notification>()?.Where(x => x.Identifier == identifier)?.ToList();
+
+            await CloseNotificationsAsync(notifications);
+        }
+
+        public async Task CloseAllAsync()
+        {
+            var notifications = _items.OfType<Notification>()?.ToList();
+
+            await CloseNotificationsAsync(notifications);
+        }
+
+        private async Task CloseNotificationsAsync(IList<Notification>? notifications)
+        {
+            if (notifications != null && notifications.Count > 0)
+            {
+                foreach (var item in notifications)
+                {
+                    await item.CloseAsync();
+                }
             }
         }
 
