@@ -6,8 +6,14 @@ using System.Windows.Controls;
 
 namespace Notifications.Wpf.Core.Controls
 {
+    /// <summary>
+    /// Stack panel implementation that has the ability to reverse the contained elements order
+    /// </summary>
     public class ReversibleStackPanel : StackPanel
     {
+        /// <summary>
+        /// True if the order should be reversed, false otherwise
+        /// </summary>
         public bool ReverseOrder
         {
             get
@@ -20,9 +26,15 @@ namespace Notifications.Wpf.Core.Controls
             }
         }
 
+        /// <summary>
+        /// Dependency property of ReverseOrder
+        /// </summary>
         public static readonly DependencyProperty ReverseOrderProperty =
             DependencyProperty.Register("ReverseOrder", typeof(bool), typeof(ReversibleStackPanel), new PropertyMetadata(false));
 
+        /// <summary>
+        /// Adjust the ordering of the children
+        /// </summary>
         protected override Size ArrangeOverride(Size arrangeSize)
         {
             double x = 0;

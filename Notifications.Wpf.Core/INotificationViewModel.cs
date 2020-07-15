@@ -2,6 +2,10 @@
 
 namespace Notifications.Wpf.Core
 {
+    /// <summary>
+    /// Interface that must be implemented when a Caliburn view/view model is used as
+    /// template for a notification
+    /// </summary>
     public interface INotificationViewModel
     {
         /// <summary>

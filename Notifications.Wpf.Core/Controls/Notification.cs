@@ -8,21 +8,40 @@ using System.Windows.Media.Animation;
 
 namespace Notifications.Wpf.Core.Controls
 {
+    /// <summary>
+    /// Control that is used to display a notification
+    /// </summary>
     [TemplatePart(Name = "PART_CloseButton", Type = typeof(Button))]
     public class Notification : ContentControl
     {
         private TimeSpan _closingAnimationTime = TimeSpan.Zero;
 
+        /// <summary>
+        /// A <see cref="Guid"/> that identifies the notification
+        /// </summary>
         public Guid Identifier { get; private set; }
 
+        /// <summary>
+        /// True if notification is closing, false otherwise
+        /// </summary>
         public bool IsClosing { get; set; }
 
+        /// <summary>
+        /// Routed event when notification is being closed
+        /// </summary>
         public static readonly RoutedEvent NotificationCloseInvokedEvent = EventManager.RegisterRoutedEvent(
             "NotificationCloseInvoked", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Notification));
 
+        /// <summary>
+        /// Routed event when notification has been closed
+        /// </summary>
         public static readonly RoutedEvent NotificationClosedEvent = EventManager.RegisterRoutedEvent(
             "NotificationClosed", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Notification));
 
+        /// <summary>
+        /// Constructor of the notification class
+        /// </summary>
+        /// <param name="identifier">The identifier that should be used for this notification</param>
         public Notification(Guid identifier)
         {
             Identifier = identifier;
@@ -34,6 +53,9 @@ namespace Notifications.Wpf.Core.Controls
                 new FrameworkPropertyMetadata(typeof(Notification)));
         }
 
+        /// <summary>
+        /// Event handler when close is invoked
+        /// </summary>
         public event RoutedEventHandler NotificationCloseInvoked
         {
             add
@@ -47,6 +69,9 @@ namespace Notifications.Wpf.Core.Controls
             }
         }
 
+        /// <summary>
+        /// Event handler when notification has been closed
+        /// </summary>
         public event RoutedEventHandler NotificationClosed
         {
             add
@@ -60,16 +85,28 @@ namespace Notifications.Wpf.Core.Controls
             }
         }
 
+        /// <summary>
+        /// Getter of the CloseOnClick property.
+        /// </summary>
+        /// <returns>True if notification should be closed on a click on it, false otherwise</returns>
         public static bool GetCloseOnClick(DependencyObject obj)
         {
             return (bool)obj.GetValue(CloseOnClickProperty);
         }
 
+        /// <summary>
+        /// Setter of the CloseOnClick property
+        /// </summary>
+        /// <param name="obj">The dependency object</param>
+        /// <param name="value">True if notification should be closed on a click on it, false otherwise</param>
         public static void SetCloseOnClick(DependencyObject obj, bool value)
         {
             obj.SetValue(CloseOnClickProperty, value);
         }
 
+        /// <summary>
+        /// Dependency property for CloseOnClick
+        /// </summary>
         public static readonly DependencyProperty CloseOnClickProperty =
             DependencyProperty.RegisterAttached("CloseOnClick", typeof(bool), typeof(Notification), new FrameworkPropertyMetadata(false, CloseOnClickChanged));
 
@@ -94,6 +131,9 @@ namespace Notifications.Wpf.Core.Controls
             }
         }
 
+        /// <summary>
+        /// Gets called just before the UI element is displayed
+        /// </summary>
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -120,6 +160,9 @@ namespace Notifications.Wpf.Core.Controls
             }
         }
 
+        /// <summary>
+        /// Closes the notification
+        /// </summary>
         public async Task CloseAsync()
         {
             if (IsClosing)

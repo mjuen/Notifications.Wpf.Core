@@ -3,6 +3,9 @@ using System.Windows.Controls;
 
 namespace Notifications.Wpf.Core
 {
+    /// <summary>
+    /// Class to help with the selection of the correct template for notifications
+    /// </summary>
     public class NotificationTemplateSelector : DataTemplateSelector
     {
         private DataTemplate? _defaultStringTemplate;
@@ -16,6 +19,9 @@ namespace Notifications.Wpf.Core
                     container?.FindResource("DefaultNotificationTemplate") as DataTemplate;
         }
 
+        /// <summary>
+        /// Selects the correct template for the given arguments
+        /// </summary>
         public override DataTemplate? SelectTemplate(object item, DependencyObject container)
         {
             if (_defaultStringTemplate == null && _defaultNotificationTemplate == null)

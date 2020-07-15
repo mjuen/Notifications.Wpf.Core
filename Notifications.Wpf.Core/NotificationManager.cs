@@ -9,6 +9,9 @@ using System.Windows.Threading;
 
 namespace Notifications.Wpf.Core
 {
+    /// <summary>
+    /// Implementation of the <see cref="INotificationManager"/> interface. Provides methods to show toast messages
+    /// </summary>
     public class NotificationManager : INotificationManager
     {
         private static readonly List<NotificationArea> Areas = new List<NotificationArea>();
@@ -60,6 +63,7 @@ namespace Notifications.Wpf.Core
             _dispatcher = dispatcher;
         }
 
+        /// <inheritdoc cref="INotificationManager.ShowAsync(string, string?, TimeSpan?, Action?, Action?, CancellationToken)"/>
         public async Task ShowAsync(string text, string? areaName = null, TimeSpan? expirationTime = null, Action? onClick = null,
             Action? onClose = null, CancellationToken token = default)
         {
@@ -67,6 +71,7 @@ namespace Notifications.Wpf.Core
                 (i) => onClick?.Invoke(), (i) => onClose?.Invoke(), token);
         }
 
+        /// <inheritdoc cref="INotificationManager.ShowAsync(Guid, string, string?, TimeSpan?, Action{Guid}?, Action{Guid}?, CancellationToken)"/>
         public async Task ShowAsync(Guid identifier, string text, string? areaName = null, TimeSpan? expirationTime = null,
             Action<Guid>? onClick = null, Action<Guid>? onClose = null, CancellationToken token = default)
         {
@@ -74,6 +79,7 @@ namespace Notifications.Wpf.Core
                 onClick, onClose, token);
         }
 
+        /// <inheritdoc cref="INotificationManager.ShowAsync(NotificationContent, string?, TimeSpan?, Action?, Action?, CancellationToken)"/>
         public async Task ShowAsync(NotificationContent content, string? areaName = null, TimeSpan? expirationTime = null,
             Action? onClick = null, Action? onClose = null, CancellationToken token = default)
         {
@@ -81,6 +87,7 @@ namespace Notifications.Wpf.Core
                 (i) => onClick?.Invoke(), (i) => onClose?.Invoke(), token);
         }
 
+        /// <inheritdoc cref="INotificationManager.ShowAsync(Guid, NotificationContent, string?, TimeSpan?, Action{Guid}?, Action{Guid}?, CancellationToken)"/>
         public async Task ShowAsync(Guid identifier, NotificationContent content, string? areaName = null, TimeSpan? expirationTime = null,
             Action<Guid>? onClick = null, Action<Guid>? onClose = null, CancellationToken token = default)
         {
@@ -88,6 +95,7 @@ namespace Notifications.Wpf.Core
                 onClick, onClose, token);
         }
 
+        /// <inheritdoc cref="INotificationManager.ShowAsync{TViewModel}(TViewModel, string?, TimeSpan?, Action?, Action?, CancellationToken)"/>
         public async Task ShowAsync<TViewModel>(TViewModel viewModel, string? areaName = null, TimeSpan? expirationTime = null,
             Action? onClick = null, Action? onClose = null, CancellationToken token = default)
             where TViewModel : INotificationViewModel
@@ -96,6 +104,7 @@ namespace Notifications.Wpf.Core
                 (i) => onClick?.Invoke(), (i) => onClose?.Invoke(), token);
         }
 
+        /// <inheritdoc cref="INotificationManager.ShowAsync{TViewModel}(Guid, TViewModel, string?, TimeSpan?, Action{Guid}?, Action{Guid}?, CancellationToken)"/>
         public async Task ShowAsync<TViewModel>(Guid identifier, TViewModel viewModel, string? areaName = null, TimeSpan? expirationTime = null,
             Action<Guid>? onClick = null, Action<Guid>? onClose = null, CancellationToken token = default) where TViewModel : INotificationViewModel
         {
@@ -168,6 +177,7 @@ namespace Notifications.Wpf.Core
             }
         }
 
+        /// <inheritdoc cref="INotificationManager.CloseAsync(Guid)"/>
         public async Task CloseAsync(Guid identifier)
         {
             foreach (var area in Areas.ToList())
@@ -176,6 +186,7 @@ namespace Notifications.Wpf.Core
             }
         }
 
+        /// <inheritdoc cref="INotificationManager.CloseAllAsync"/>
         public async Task CloseAllAsync()
         {
             foreach (var area in Areas.ToList())
