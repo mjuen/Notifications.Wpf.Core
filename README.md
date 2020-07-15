@@ -45,7 +45,7 @@ xmlns:notifications="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Noti
      Position="TopLeft" />
 ```
 
-It is also possible to add the area name with a `Binding`. But as binding to `Name` property directly does not work, we offer you the `BindableName` property instead.
+It is also possible to add the area name with a `Binding`. But as binding to the `Name` property directly does not work, we offer you the `BindableName` property instead.
 
 ```XAML
 <notifications:NotificationArea
@@ -78,8 +78,8 @@ var identifier = Guid.NewGuid();
 
 await notificationManager.ShowAsync(identifier, "I'm here to stay", 
            expirationTime: TimeSpan.MaxValue, 
-           onClose: (identifier) => {
-    NotifySomeoneAboutClose(identifier);
+           onClose: (id) => {
+    NotifySomeoneAboutClose(id);
 });
 
 await notificationManager.CloseAsync(identifier);
