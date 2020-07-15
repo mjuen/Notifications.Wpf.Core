@@ -39,14 +39,28 @@ xmlns:notifications="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Noti
 ```
 - Adding new NotificationArea:
 ```XAML
-<notifications:NotificationArea x:Name="WindowArea" Position="TopLeft" MaxItems="3"/>
+<notifications:NotificationArea  
+     MaxItems="3"
+     x:Name="WindowArea"
+     Position="TopLeft" />
 ```
+
+It is also possible to add the area name with a `Binding`. But as binding to `Name` property directly does not work, we offer you the `BindableName` property instead.
+
+```XAML
+<notifications:NotificationArea
+    BindableName="{Binding NotificationAreaIdentifier}"
+    MaxItems="3"
+    Position="TopRight" />
+```
+
 - Displaying notification:
 ```C#
 await notificationManager.ShowAsync(
                 new NotificationContent {Title = "Notification", Message = "Notification in window!"},
                 areaName: "WindowArea");
 ```
+
 
 #### Simple text with OnClick & OnClose actions:
 ```C#
@@ -117,13 +131,15 @@ public class NotificationViewModel : PropertyChangedBase, INotificationViewModel
         public async Task Ok()
         {
             await Task.Delay(500);
-            await _manager.ShowAsync(new NotificationContent { Title = "Success!", Message = "Ok button was clicked.", Type = NotificationType.Success });
+            await _manager.ShowAsync(new NotificationContent { Title = "Success!", 
+                      Message = "Ok button was clicked.", Type = NotificationType.Success });
         }
 
         public async Task Cancel()
         {
             await Task.Delay(500);
-            await _manager.ShowAsync(new NotificationContent { Title = "Error!", Message = "Cancel button was clicked!", Type = NotificationType.Error });
+            await _manager.ShowAsync(new NotificationContent { Title = "Error!", 
+                      Message = "Cancel button was clicked!", Type = NotificationType.Error });
         }
     }
 ```
@@ -143,7 +159,8 @@ await _manager.ShowAsync(content, expirationTime: TimeSpan.FromSeconds(30));
 <DockPanel LastChildFill="False">
     <!--Using CloseOnClick attached property to close notification when button is pressed-->
     <Button x:Name="Ok" Content="Ok" DockPanel.Dock="Right" controls:Notification.CloseOnClick="True"/>
-    <Button x:Name="Cancel" Content="Cancel" DockPanel.Dock="Right" Margin="0,0,8,0" controls:Notification.CloseOnClick="True"/>
+    <Button x:Name="Cancel" Content="Cancel" DockPanel.Dock="Right" Margin="0,0,8,0" 
+           controls:Notification.CloseOnClick="True"/>
 </DockPanel>
 ```
 - Result:
