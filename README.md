@@ -45,7 +45,7 @@ xmlns:notifications="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Noti
      Position="TopLeft" />
 ```
 
-It is also possible to add the area name with a binding. But as binding to `Name` property directly does not work, we offer you the `BindableName` property instead.
+It is also possible to add the area name with a `Binding`. But as binding to `Name` property directly does not work, we offer you the `BindableName` property instead.
 
 ```XAML
 <notifications:NotificationArea
