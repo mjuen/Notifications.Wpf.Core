@@ -13,6 +13,8 @@ namespace Notifications.Wpf.Core.Controls
     {
         private TimeSpan _closingAnimationTime = TimeSpan.Zero;
 
+        public Guid Identifier { get; private set; }
+
         public bool IsClosing { get; set; }
 
         public static readonly RoutedEvent NotificationCloseInvokedEvent = EventManager.RegisterRoutedEvent(
@@ -20,6 +22,11 @@ namespace Notifications.Wpf.Core.Controls
 
         public static readonly RoutedEvent NotificationClosedEvent = EventManager.RegisterRoutedEvent(
             "NotificationClosed", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Notification));
+
+        public Notification(Guid identifier)
+        {
+            Identifier = identifier;
+        }
 
         static Notification()
         {
