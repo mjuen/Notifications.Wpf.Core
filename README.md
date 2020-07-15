@@ -53,6 +53,25 @@ await notificationManager.ShowAsync(
 await notificationManager.ShowAsync("String notification", onClick: () => Console.WriteLine("Click"),
                onClose: () => Console.WriteLine("Closed!"));
 ```
+
+#### Notifications with identifiers
+
+Sometimes it comes in handy if you can close specific notifications via code. To do that you have the possibility to specify an identifier in the form of a `Guid` for a notification.
+
+```C#
+
+var identifier = Guid.NewGuid(); 
+
+await notificationManager.ShowAsync(identifier, "I'm here to stay", 
+           expirationTime: TimeSpan.MaxValue, 
+           onClose: (identifier) => {
+    NotifySomeoneAboutClose(identifier);
+});
+
+await notificationManager.CloseAsync(identifier);
+```
+
+
 ### Caliburn.Micro MVVM support:
 - App.xaml:
 ```XAML
@@ -78,12 +97,21 @@ public class NotificationViewModel : PropertyChangedBase, INotificationViewModel
     {
         private readonly INotificationManager _manager;
 
+        private Guid? _notificationIdentifier;
+
         public string? Title { get; set; }
         public string? Message { get; set; }
 
         public NotificationViewModel(INotificationManager manager)
         {
             _manager = manager;
+        }
+        
+        // This method is called when the notification with this view/view model is
+        // shown. It can be used to receive the identifier of the notification
+        public void SetNotificationIdentifier(Guid identifier)
+        {
+            _notificationIdentifier = identifier;
         }
 
         public async Task Ok()
