@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 
@@ -43,14 +44,20 @@ namespace Notifications.Wpf.Core.Sample
         {
             var content = new NotificationContent { Title = "Notification in window", Message = "Click me!" };
 
+            var identifier = Guid.NewGuid();
+
             var clickContent = new NotificationContent
             {
                 Title = "Clicked!",
-                Message = "Window notification was clicked!",
+                Message = $"Window notification with identifier\n{identifier}\nwas clicked!",
                 Type = NotificationType.Success
             };
 
-            await _notificationManager.ShowAsync(content, "WindowArea", onClick: async () => await _notificationManager.ShowAsync(clickContent));
+            await _notificationManager.ShowAsync(identifier, content, "WindowArea", expirationTime: TimeSpan.MaxValue,
+                onClick: async (identifier) => await _notificationManager.ShowAsync(clickContent));
+
+            await Task.Delay(3000);
+            await _notificationManager.CloseAsync(identifier);
         }
 
         private async void CloseAll_Click(object sender, RoutedEventArgs e)
