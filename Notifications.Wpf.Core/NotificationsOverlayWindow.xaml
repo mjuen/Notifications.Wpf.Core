@@ -1,19 +1,23 @@
-﻿<Window x:Class="Notifications.Wpf.Core.NotificationsOverlayWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Notifications.Wpf.Core"
-        xmlns:controls="clr-namespace:Notifications.Wpf.Core.Controls"
-        mc:Ignorable="d"
-        Title="ToastWindow"
-        Background="Transparent"
-        ShowInTaskbar="False"
-        WindowStyle="None"
-        AllowsTransparency="True"
-        Topmost="True"
-        ShowActivated="False"
-        d:DesignWidth="900"
-        d:DesignHeight="600">
-    <controls:NotificationArea x:Name="NotificationsOverlayWindow_NotifyArea" Position="BottomRight" Margin="8" />
+﻿<Window
+    x:Class="Notifications.Wpf.Core.NotificationsOverlayWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Notifications.Wpf.Core.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Notifications.Wpf.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="ToastWindow"
+    d:DesignHeight="600"
+    d:DesignWidth="900"
+    AllowsTransparency="True"
+    Background="Transparent"
+    ShowActivated="False"
+    ShowInTaskbar="False"
+    Topmost="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <controls:NotificationArea
+        x:Name="NotificationsOverlayWindow_NotifyArea"
+        Margin="8"
+        Position="BottomRight" />
 </Window>

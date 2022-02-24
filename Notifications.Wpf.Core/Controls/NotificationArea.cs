@@ -233,7 +233,7 @@ namespace Notifications.Wpf.Core.Controls
         /// <param name="identifier">The identifier of the notification</param>
         public async Task CloseAsync(Guid identifier)
         {
-            var notifications = _items.OfType<Notification>()?.Where(x => x.Identifier == identifier)?.ToList();
+            var notifications = _items?.OfType<Notification>()?.Where(x => x.Identifier == identifier)?.ToList();
 
             await CloseNotificationsAsync(notifications);
         }
@@ -244,7 +244,7 @@ namespace Notifications.Wpf.Core.Controls
         /// </summary>
         public async Task CloseAllAsync()
         {
-            var notifications = _items.OfType<Notification>()?.ToList();
+            var notifications = _items?.OfType<Notification>()?.ToList();
 
             await CloseNotificationsAsync(notifications);
         }
