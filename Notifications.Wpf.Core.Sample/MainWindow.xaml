@@ -12,6 +12,7 @@
     <DockPanel>
         <UniformGrid DockPanel.Dock="Bottom" Rows="1">
             <Button Click="Show_Click" Content="Show" />
+            <Button Click="ShowCustom_Click" Content="Show custom" />
             <Button Click="ShowWindow_Click" Content="Show in window" />
             <Button Click="CloseAll_Click" Content="Close all" />
         </UniformGrid>

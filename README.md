@@ -85,6 +85,9 @@ await notificationManager.ShowAsync(identifier, "I'm here to stay",
 await notificationManager.CloseAsync(identifier);
 ```
 
+#### Adjust style of notificiations
+
+You do not like the default styles of the notifications? No problem. You can use your own custom styles. Take a look the sample project `Notifications.Wpf.Core.Sample` where this is demonstrated. Basically you have to create a custom `NotificationTemplateSelector` in which you specify which templates should be used.
 
 ### Caliburn.Micro MVVM support:
 - App.xaml:
