@@ -64,5 +64,17 @@ namespace Notifications.Wpf.Core.Sample
         {
             await _notificationManager.CloseAllAsync();
         }
+
+        private async void ShowCustom_Click(object sender, RoutedEventArgs e)
+        {
+            var content = new CustomThemedNotificationContent
+            {
+                Title = "Sample notification",
+                Message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                Type = (NotificationType)_random.Next(0, 4)
+            };
+
+            await _notificationManager.ShowAsync(content);
+        }
     }
 }
