@@ -9,7 +9,7 @@
     <PackageId>Notifications.Wpf.Core</PackageId>
     <Authors>Adrian Gaś, Simon Mauracher, Marcel Juen</Authors>
     <Company />
-    <Description>Toast notifications for WPF apps based on .NET Core 3.1. This is a fork of Notifications.Wpf by Adrian Gaś</Description>
+    <Description>Toast notifications for WPF apps based on .NET 6. This is a fork of Notifications.Wpf by Adrian Gaś</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/mjuen/Notifications.Wpf.Core</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
