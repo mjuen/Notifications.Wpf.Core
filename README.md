@@ -18,12 +18,14 @@ Install-Package Notifications.Wpf.Core
 ```C#
 var notificationManager = new NotificationManager();
 
-await notificationManager.ShowAsync(new NotificationContent
-           {
-               Title = "Sample notification",
-               Message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-               Type = NotificationType.Information
-           });
+var notificationContent = new NotificationContent
+{
+    Title = "Sample notification",
+    Message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    Type = NotificationType.Information
+};
+
+await notificationManager.ShowAsync(notificationContent);
 ```
 
 You can also alter this position by passing the desired position as an argument
@@ -56,16 +58,22 @@ It is also possible to add the area name with a `Binding`. But as binding to the
 
 - Displaying notification:
 ```C#
-await notificationManager.ShowAsync(
-                new NotificationContent {Title = "Notification", Message = "Notification in window!"},
-                areaName: "WindowArea");
+var notificationContent = new NotificationContent
+{
+    Title = "Notification",
+    Message = "Notification in window!"
+};
+
+await notificationManager.ShowAsync(notificationContent, areaName: "WindowArea");
 ```
 
 
 #### Simple text with OnClick & OnClose actions:
 ```C#
-await notificationManager.ShowAsync("String notification", onClick: () => Console.WriteLine("Click"),
-               onClose: () => Console.WriteLine("Closed!"));
+await notificationManager.ShowAsync("String notification",
+    onClick: () => Console.WriteLine("Click"),
+    onClose: () => Console.WriteLine("Closed!")
+);
 ```
 
 #### Notifications with identifiers
@@ -74,13 +82,15 @@ Sometimes it comes in handy if you can close specific notifications via code. To
 
 ```C#
 
-var identifier = Guid.NewGuid(); 
+var identifier = Guid.NewGuid();
 
-await notificationManager.ShowAsync(identifier, "I'm here to stay", 
-           expirationTime: TimeSpan.MaxValue, 
-           onClose: (id) => {
-    NotifySomeoneAboutClose(id);
-});
+await notificationManager.ShowAsync(identifier,
+        "I'm here to stay",
+        expirationTime: TimeSpan.MaxValue,
+        onClose: (id) =>
+        {
+            NotifySomeoneAboutClose(id);
+        });
 
 await notificationManager.CloseAsync(identifier);
 ```
@@ -111,40 +121,40 @@ The used view model must implement `INotificationViewModel`
 
 ```C#
 public class NotificationViewModel : PropertyChangedBase, INotificationViewModel
+{
+    private readonly INotificationManager _manager;
+
+    private Guid? _notificationIdentifier;
+
+    public string? Title { get; set; }
+    public string? Message { get; set; }
+
+    public NotificationViewModel(INotificationManager manager)
     {
-        private readonly INotificationManager _manager;
-
-        private Guid? _notificationIdentifier;
-
-        public string? Title { get; set; }
-        public string? Message { get; set; }
-
-        public NotificationViewModel(INotificationManager manager)
-        {
-            _manager = manager;
-        }
-        
-        // This method is called when the notification with this view/view model is
-        // shown. It can be used to receive the identifier of the notification
-        public void SetNotificationIdentifier(Guid identifier)
-        {
-            _notificationIdentifier = identifier;
-        }
-
-        public async Task Ok()
-        {
-            await Task.Delay(500);
-            await _manager.ShowAsync(new NotificationContent { Title = "Success!", 
-                      Message = "Ok button was clicked.", Type = NotificationType.Success });
-        }
-
-        public async Task Cancel()
-        {
-            await Task.Delay(500);
-            await _manager.ShowAsync(new NotificationContent { Title = "Error!", 
-                      Message = "Cancel button was clicked!", Type = NotificationType.Error });
-        }
+        _manager = manager;
     }
+        
+    // This method is called when the notification with this view/view model is
+    // shown. It can be used to receive the identifier of the notification
+    public void SetNotificationIdentifier(Guid identifier)
+    {
+        _notificationIdentifier = identifier;
+    }
+
+    public async Task Ok()
+    {
+        await Task.Delay(500);
+        await _manager.ShowAsync(new NotificationContent { Title = "Success!", 
+                  Message = "Ok button was clicked.", Type = NotificationType.Success });
+    }
+
+    public async Task Cancel()
+    {
+        await Task.Delay(500);
+        await _manager.ShowAsync(new NotificationContent { Title = "Error!", 
+                  Message = "Cancel button was clicked!", Type = NotificationType.Error });
+    }
+}
 ```
 
 - ShellViewModel:
