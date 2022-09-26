@@ -103,13 +103,29 @@ namespace Notifications.Wpf.Core.Controls
         {
             NotificationManager.AddArea(this);
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
+            Unloaded += NotificationArea_Unloaded;
+        }
+
+        private void NotificationArea_Unloaded(object sender, RoutedEventArgs e)
+        {
+            CleanUp();
         }
 
         private void Dispatcher_ShutdownStarted(object? sender, EventArgs e)
         {
-            // Clean up resources
+            CleanUp();
+        }
+
+        /// <summary>
+        /// Clean up resources
+        /// </summary>
+        private void CleanUp()
+        {
             NotificationManager.RemoveArea(this);
             _semaphore?.Dispose();
+
+            Dispatcher.ShutdownStarted -= Dispatcher_ShutdownStarted;
+            Unloaded -= NotificationArea_Unloaded;
         }
 
         static NotificationArea()
