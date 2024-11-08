@@ -40,10 +40,10 @@ namespace Notifications.Wpf.Core.Caliburn.Micro.Sample
             _container.BuildUp(instance);
         }
 
-        protected override void OnStartup(object sender, StartupEventArgs e)
+        protected override async void OnStartup(object sender, StartupEventArgs e)
         {
             base.OnStartup(sender, e);
-            DisplayRootViewFor<ShellViewModel>();
+            await DisplayRootViewForAsync<ShellViewModel>();
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
             var timer = new Timer { Interval = 12000 };

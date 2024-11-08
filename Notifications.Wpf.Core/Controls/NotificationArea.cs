@@ -147,20 +147,6 @@ namespace Notifications.Wpf.Core.Controls
         /// <summary>
         /// Shows a toast inside the notification area
         /// </summary>
-        /// <param name="content">The content that should be displayed</param>
-        /// <param name="expirationTime">A <see cref="TimeSpan"/> after which the toast disappears</param>
-        /// <param name="onClick">An action that is triggered when the toast is clicked. The notification identifier is supplied as argument</param>
-        /// <param name="onClose">An action that is triggered when the toast closes. The notification identifier is supplied as argument</param>
-        /// <param name="token">The cancellation token that should be used</param>
-        [Obsolete("This method is deprecated. Please use the new ShowAsync that includes an identifier instead", false)]
-        public async Task ShowAsync(object content, TimeSpan expirationTime, Action? onClick, Action? onClose, CancellationToken token = default)
-        {
-            await ShowAsync(Guid.NewGuid(), content, expirationTime, (i) => onClick?.Invoke(), (i) => onClose?.Invoke(), token);
-        }
-
-        /// <summary>
-        /// Shows a toast inside the notification area
-        /// </summary>
         /// <param name="identifier">The identifier used for the notification</param>
         /// <param name="content">The content that should be displayed</param>
         /// <param name="expirationTime">A <see cref="TimeSpan"/> after which the toast disappears</param>
@@ -249,7 +235,7 @@ namespace Notifications.Wpf.Core.Controls
         /// <param name="identifier">The identifier of the notification</param>
         public async Task CloseAsync(Guid identifier)
         {
-            var notifications = _items?.OfType<Notification>()?.Where(x => x.Identifier == identifier)?.ToList();
+            var notifications = _items?.OfType<Notification>().Where(x => x.Identifier == identifier).ToList();
 
             await CloseNotificationsAsync(notifications);
         }
@@ -260,12 +246,12 @@ namespace Notifications.Wpf.Core.Controls
         /// </summary>
         public async Task CloseAllAsync()
         {
-            var notifications = _items?.OfType<Notification>()?.ToList();
+            var notifications = _items?.OfType<Notification>().ToList();
 
             await CloseNotificationsAsync(notifications);
         }
 
-        private async Task CloseNotificationsAsync(IList<Notification>? notifications)
+        private static async Task CloseNotificationsAsync(IList<Notification>? notifications)
         {
             if (notifications != null && notifications.Count > 0)
             {
